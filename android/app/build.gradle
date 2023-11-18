@@ -55,8 +55,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         minSdkVersion 21 //minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 33 //targetSdkVersion flutter.targetSdkVersion
-        multiDexEnabled true
+        targetSdkVersion 34 //targetSdkVersion flutter.targetSdkVersion
+        // multiDexEnabled true
     }
     signingConfigs{
         release{
@@ -89,10 +89,10 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
 
-            // 混淆
-            minifyEnabled true
-            // 去除无用res文件
-            shrinkResources true
+            // // 混淆
+            // minifyEnabled true
+            // // 去除无用res文件
+            // shrinkResources true
             //'proguard-rules.pro'后面要创建的文件
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro' 
             //使用签名文件

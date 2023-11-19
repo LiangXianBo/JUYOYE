@@ -22,9 +22,9 @@ class ReadPageState extends State<ReadPage> {
     //获取路由参数
     var response_content = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("阅读页面"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("阅读页面"),
+      // ),
       body: SizedBox(
         // width: 500,
         child: SingleChildScrollView(

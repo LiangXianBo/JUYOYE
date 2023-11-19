@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -31,7 +30,7 @@ void main() async {
   // 为后面 flutter_inappwebview 插件 与 Flutter Engine 进行通信 调用原生代码做准备，创建WidgetsBinding实例
   // 在调用 runApp 之前初始化绑定时，才需要调用此方法
   WidgetsFlutterBinding.ensureInitialized();
-  // DartPluginRegistrant.ensureInitialized();
+  // // DartPluginRegistrant.ensureInitialized();
   if (!(Platform.isAndroid || Platform.isIOS)) {
     //窗口初始化
     await windowManager.ensureInitialized();
@@ -54,34 +53,6 @@ void main() async {
       await windowManager.focus();
     });
   }
-  if (Platform.isAndroid) {
-    // SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
-    //   statusBarColor: Colors.transparent,
-    //   systemNavigationBarColor: Colors.transparent,
-    //   systemNavigationBarDividerColor: Colors.transparent,
-    // );
-    // SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-
-    // SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
-    //     statusBarColor: Colors.transparent,
-    //     systemNavigationBarColor: Colors.blueAccent);
-    // SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-
-    // SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-  }
-  // SystemChrome.setEnabledSystemUIMode(
-  //   SystemUiMode.edgeToEdge,
-  // );
   final Directory dir = await getApplicationDocumentsDirectory();
 
   Global.isar = await Isar.open(
@@ -91,6 +62,20 @@ void main() async {
   );
 
   runApp(const MyApp());
+
+  if (Platform.isAndroid) {
+    SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    );
+
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -99,28 +84,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return
-        // AnnotatedRegion<SystemUiOverlayStyle>(
-        //   // 设置 AppBar 颜色属性
-        //   value: SystemUiOverlayStyle.dark,
-        //   child:
-        // );
-        MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color.fromARGB(255, 48, 207, 121),
-          // brightness: Brightness.light
         ),
         appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
           titleTextStyle:
               TextStyle(color: Colors.black, fontFamily: "微软雅黑", fontSize: 20),
-          backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           elevation: 0.0,
         ),
-        useMaterial3: true, //Material3设计主题
+        useMaterial3: true,
+        //Material3设计主题
       ),
       // home: const MyHomePage(),
       initialRoute: "/", //名为"/"的路由作为应用的home(首页)
@@ -167,16 +144,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  PreferredSizeWidget buildAppBarHelper() {
+    return AppBar(
+      title: Text(
+        "优聚阅",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      centerTitle: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("feed_list.length:${feed_list.length}");
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "优聚阅",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: buildAppBarHelper(),
       body: SafeArea(
         child: ListView.builder(
             itemCount: postFeedData.length,
@@ -233,7 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }),
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, 'AddFeedPage');

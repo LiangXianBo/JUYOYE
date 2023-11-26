@@ -23,7 +23,7 @@ class FeedListPageState extends ConsumerState<FeedListPage> {
   @override
   Widget build(BuildContext context) {
     final feed_list = ref.watch(feedList_Provider);
-    print("feed_list,${feed_list}");
+
     return Scrollbar(
       child: SingleChildScrollView(
         primary: true,

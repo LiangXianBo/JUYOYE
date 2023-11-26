@@ -42,15 +42,6 @@ class PostListPageState extends ConsumerState<PostListPage> {
     ref
         .read(postNotifier_provider.notifier)
         .postfeed(ref.read(feedNotifier_provider.notifier).state);
-    // // 将post的数据存入数据库
-    // await ref
-    //     .read(postNotifier_provider.notifier)
-    //     .state
-    //     .insertPostdata_toDB()
-    //     .then(
-    //   (value) {
-    //   },
-    // );
     // 重新读取Post数据表中的所有数据
     ref.read(postList_Provider.notifier).state =
         Global.isar!.posts.where().findAllSync();
@@ -99,6 +90,12 @@ class PostListPageState extends ConsumerState<PostListPage> {
                       setState(() {
                         getArticleHTML = bestElemReadability.outerHtml;
                       });
+                      // Feed名称
+                      ref.read(FeedTitle_Provider.notifier).state =
+                          postList[index].feedName!;
+                      // 文章标题
+                      ref.read(ArticalTitle_Provider.notifier).state =
+                          postList[index].title!;
 
                       // 跳转到阅读页面
                       Navigator.pushNamed(context, 'ReadPage',

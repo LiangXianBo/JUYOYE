@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-
-import '../Riverpod/providers.dart';
+import 'package:juyoye/Riverpod/providers.dart';
 
 class ReadPage extends ConsumerStatefulWidget {
   const ReadPage({
@@ -21,26 +20,37 @@ class ReadPageState extends ConsumerState<ReadPage> {
   Widget build(BuildContext context) {
     //获取路由参数
     var getArticleHTML = ModalRoute.of(context)!.settings.arguments;
+
+    String ArticleHtml = '''         
+          <body> 
+            <h1>${ref.watch(ArticalTitle_Provider)}</h1>
+            ${getArticleHTML}
+          </body>
+      ''';
     return Scaffold(
       appBar: AppBar(
-        title: Text("阅读页面"),
-      ),
-      body: SizedBox(
-        // width: 500,
-        child: SingleChildScrollView(
-          child: HtmlWidget(
-              // HTML页面格式
-              "${getArticleHTML}"),
+        title: Text(
+          "${ref.watch(FeedTitle_Provider)}",
         ),
       ),
+      body: SingleChildScrollView(
+          child: Padding(
+        padding: EdgeInsets.only(top: 16, bottom: 54, left: 16, right: 16),
+        child: HtmlWidget(
+          // HTML页面格式
+          ArticleHtml,
+          textStyle: TextStyle(fontSize: 16),
+          customStylesBuilder: (element) {
+            if (element.localName == 'h1') {
+              return {
+                'font-size': '1.8em',
+                'line-height': '1.3em',
+              };
+            }
+            return {};
+          },
+        ),
+      )),
     );
   }
 }
-// <body>
-//   <h3>Heading</h3>
-//   <p>
-
-//     A paragraph with <strong>strong</strong>, <em>emphasized</em>
-//     and <span style="color: red">colored</span> text.
-//   </p>
-// </body>

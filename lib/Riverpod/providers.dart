@@ -9,25 +9,34 @@ import '../Modle/post.dart';
 import '../utils/parse_feed_utils.dart';
 import '../utils/parse_post_utils.dart';
 
-// 文章HTML状态
+//===== 文章标题状态 =====
+final FeedTitle_Provider = StateProvider((ref) {
+  final String feedTitle = "";
+  return feedTitle;
+});
+//===== 文章标题状态 =====
+final ArticalTitle_Provider = StateProvider((ref) {
+  final String articalTitle = "";
+  return articalTitle;
+});
+// Post列表状态
 final postList_Provider = StateProvider((ref) {
   final List<Post> postList = Global.isar!.posts.where().findAllSync();
   return postList;
 });
 
-// 订阅源列表状态
+//===== 订阅源列表状态
 final feedList_Provider = StateProvider<List<Feed>>((ref) {
   final feed_list = Global.isar!.feeds.where().findAllSync();
   return feed_list;
 });
-// feed信息卡片显示状态
+//===== feed信息卡片显示状态 =====
 final isShowfeedCard_Provider = StateProvider<bool>((ref) {
   final bool isShowfeedCard = false;
   return isShowfeedCard;
 });
 
 //===== 解析订阅源获取 Post 值的状态 =====
-
 final postNotifier_provider =
     StateNotifierProvider<PostNotifier_provider, Post>(
         (ref) => PostNotifier_provider());

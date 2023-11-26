@@ -58,7 +58,7 @@ class PostNotifier_provider extends StateNotifier<Post> {
   Future postfeed(Feed feed) async {
     Post post;
     try {
-      post = await parse_post(feed); // https://sspai.com/feed
+      post = await parse_post(feed);
     } catch (e) {
       return null;
     }

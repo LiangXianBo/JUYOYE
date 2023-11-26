@@ -1,16 +1,22 @@
-# juyoye
+<div align='center'>
+<p><a href="Juyoyue.md">简体中文</a> </p><!--  | English -->
+<img src='lib/Asserts/logo/JUYOYUE.png' alt='MeRead' width='100px'/>
+<h1>JUYOYUE 聚优阅</h1>
 
-A new Flutter project.
+<p>
+<strong>简易的 RSS 阅读器，使用 <a href='https://flutter.dev' target='_blank'>Flutter</a> 构建和 <a href='https://m3.material.io/' target='_blank'>Material You</a> 设计</strong>
+</p>
 
-## Getting Started
+<p>
+<img alt="MeRead" src="lib/Asserts/images/1.jpg" width="200">
+<img alt="MeRead" src="lib/Asserts/images/2.jpg" width="200">
+<img alt="MeRead" src="lib/Asserts/images/3.jpg" width="200">
+<img alt="MeRead" src="lib/Asserts/images/4.jpg" width="200">
+</p>
+</div>
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 说明
+- [✓] 订阅源添加、删除
+- [✓] 自动获取全文在应用内阅读
+- [✓] 可选择跳转到浏览器阅读
+<p>目前刚开始，其它功能正在建设中......</p>

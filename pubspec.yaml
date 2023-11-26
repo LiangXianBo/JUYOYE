@@ -106,6 +106,14 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
+  #   - family: NotoSansSC
+  #     fonts:
+  #       - asset: NotoSansSC-Medium.ttf
+        # - asset: NotoSansSC-Black.ttf
+        # - asset: NotoSansSC-Blod.ttf
+          # weight: 600 
+        # - asset: fonts/Raleway-Italic.ttf
+  
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
@@ -117,9 +125,7 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
-
+  
 
 
 # # 设置移动端APP图标

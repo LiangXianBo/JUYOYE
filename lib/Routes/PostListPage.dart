@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:html/parser.dart' as html_parser;
 
 import '../Global/global.dart';
 import '../Modle/post.dart';
+import '../Riverpod/providers.dart';
 
 class PostListPage extends ConsumerStatefulWidget {
   const PostListPage({super.key});
@@ -19,33 +22,57 @@ class PostListPage extends ConsumerStatefulWidget {
 }
 
 class PostListPageState extends ConsumerState<PostListPage> {
-  List<Post> postFeedData = [];
+  // List<Post> postFeedData = [];
+  String? getArticleHTML;
   @override
   void initState() {
-    postFeedData = Global.isar!.posts.where().findAllSync();
-    // feed_list = Global.isar!.feeds.where().findAllSync();
+    // postFeedData = Global.isar!.posts.where().findAllSync();
+
     super.initState();
   }
 
-  var response_content;
   Future _launchUrl(url) async {
     if (!await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView)) {
       throw Exception("Could not launch ${Uri.parse(url)}");
     }
   }
 
+  Future _onrefresh() async {
+    // 通过当前Feed解析获取post
+    ref
+        .read(postNotifier_provider.notifier)
+        .postfeed(ref.read(feedNotifier_provider.notifier).state);
+    // // 将post的数据存入数据库
+    // await ref
+    //     .read(postNotifier_provider.notifier)
+    //     .state
+    //     .insertPostdata_toDB()
+    //     .then(
+    //   (value) {
+    //   },
+    // );
+    // 重新读取Post数据表中的所有数据
+    ref.read(postList_Provider.notifier).state =
+        Global.isar!.posts.where().findAllSync();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var postList = ref.watch(postList_Provider);
+
     return SafeArea(
-      child: ListView.builder(
-          itemCount: postFeedData.length,
-          itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              width: 200,
-              child: Card(
-                child: Column(children: [
-                  TextButton(
-                    onPressed: () async {
+      child: RefreshIndicator(
+        onRefresh: _onrefresh,
+        child: ListView.builder(
+            itemCount: postList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+                // width: 200,
+                child: Card(
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    onTap: () async {
                       final client = IOClient(
                         HttpClient()
                           ..badCertificateCallback = ((cert, host, port) =>
@@ -53,46 +80,86 @@ class PostListPageState extends ConsumerState<PostListPage> {
                       );
                       // 获取响应内容
                       var content = await client.get(
-                        Uri.parse(postFeedData[index]
+                        Uri.parse(postList[index]
                             .link
                             .toString()), //'https://www.theverge.com/rss/index.xml'
                       );
                       // 对响应内容中的body进行解析，提取内容
                       final document = html_parser.parse(content.body);
-                      // html可读
-                      final scoreMapReadability =
-                          readabilityScore(document.documentElement!);
-                      //
+
+                      // 成得分图并获取每个 html 元素的得分
+                      // final scoreMapReadability =
+                      //     readabilityScore(document.documentElement!);
+                      // print(scoreMapReadability);
+
+                      // 获取得分最高的html元素
                       final bestElemReadability =
                           readabilityMainElement(document.documentElement!);
 
                       setState(() {
-                        response_content = bestElemReadability.outerHtml;
+                        getArticleHTML = bestElemReadability.outerHtml;
                       });
-                      print(response_content);
+
                       // 跳转到阅读页面
                       Navigator.pushNamed(context, 'ReadPage',
-                          arguments: response_content);
+                          arguments: getArticleHTML);
                     },
-                    child: Text("${postFeedData[index].title}"),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${postList[index].title}",
+                              style: TextStyle(fontSize: Global.Fontsize_16),
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "${postList[index].feedName}",
+                                        style: TextStyle(
+                                            fontSize: Global.Fontsize_12),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "${postList[index].pubDate! != "" ? postList[index].pubDate!.substring(0, 10) : null}",
+                                        style: TextStyle(
+                                            fontSize: Global.Fontsize_12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  onTap: () {
+                                    // 跳转带网页
+                                    _launchUrl(postList[index].link);
+                                  },
+                                  child: Icon(
+                                    Icons.open_in_browser,
+                                    size: 20,
+                                  ),
+                                ),
+
+                                // ),
+                              ],
+                            ),
+                          ]),
+                    ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      _launchUrl(postFeedData[index].link);
-                    },
-                    child: Text("跳转到浏览器"),
-                  ),
-                  Row(
-                    children: [
-                      Text("${postFeedData[index].feedName}"),
-                      Text(
-                          "${postFeedData[index].pubDate! != null ? postFeedData[index].pubDate!.substring(0, 10) : null}"),
-                    ],
-                  )
-                ]),
-              ),
-            );
-          }),
+                ),
+              );
+            }),
+      ),
     );
   }
 }

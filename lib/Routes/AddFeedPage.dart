@@ -1,18 +1,14 @@
 // ignore_for_file: non_constant_identifier_names, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:isar/isar.dart';
 import 'package:juyoye/Global/global.dart';
-import 'package:juyoye/Routes/HomePage.dart';
+import 'package:juyoye/Modle/post.dart';
 
 import '../Modle/feed.dart';
 import '../Riverpod/providers.dart';
-import '../utils/parse_feed_utils.dart';
 
 class AddFeedPage extends ConsumerStatefulWidget {
   const AddFeedPage({super.key});
@@ -48,17 +44,14 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                 decoration: InputDecoration(
                   labelText: "订阅源地址",
                   labelStyle: TextStyle(
-                    color: Global.label_TextFieldTextColor,
-                    fontSize: Global.label_TextFieldTextFontsize,
+                    fontSize: 20,
                   ),
                   floatingLabelStyle: const TextStyle(
-                    color: Colors.black,
                     fontSize: 20,
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Global.elevatedbuttonColor,
-                      width: 2,
+                      width: 1,
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                   ),
@@ -94,7 +87,7 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                         buttontext: '解析',
                         onpressed: () async {
                           try {
-                            // 解析订阅源获取Feed值的状态
+                            // 解析订阅源获取Feed值
                             ref
                                 .read(feedNotifier_provider.notifier)
                                 .getfeed(addFeedUrlController.text);
@@ -105,7 +98,6 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                             // feed信息卡片显示状态
                             ref.read(isShowfeedCard_Provider.notifier).state =
                                 false;
-                            return null;
                           }
                         },
                       ),
@@ -116,6 +108,7 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
 
                 return isShowfeedCard
                     ? Padding(
+                        //Feed名称和描述卡片的Widget
                         padding: EdgeInsets.only(top: 10),
                         child: Card(
                           color: Colors.white70,
@@ -123,24 +116,41 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                           child: InkWell(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
-                              onTap: () {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text('Tap'),
-                                ));
+                              onTap: () async {
+                                // NavigationBar
+                                var feedNotifier = ref
+                                    .read(feedNotifier_provider.notifier)
+                                    .state;
 
                                 try {
-                                  ref
-                                      .read(feedNotifier_provider.notifier)
-                                      .state
-                                      .insertFeed_toDB()
-                                      .then((value) {
-                                    ref.read(feedList_Provider.notifier).state =
-                                        Global.isar!.feeds
-                                            .where()
-                                            .findAllSync();
-                                  });
+                                  if (await Feed.feedIsNotExist_inDB(
+                                      addFeedUrlController.text)) {
+                                    await feedNotifier.insertFeed_toDB().then(
+                                      (value) {
+                                        // 重新读取 Feed 数据表中的所有数据
+                                        ref
+                                                .read(feedList_Provider.notifier)
+                                                .state =
+                                            Global.isar!.feeds
+                                                .where()
+                                                .findAllSync();
+                                      },
+                                    );
+                                    // 通过当前Feed解析获取posts同时存入数据库
+                                    await ref
+                                        .read(postNotifier_provider.notifier)
+                                        .postfeed(feedNotifier);
+
+                                    // 将post的数据存入数据库
+                                    await ref
+                                        .read(postNotifier_provider.notifier)
+                                        .state
+                                        .insertPostdata_toDB();
+                                    // 退出弹窗
+                                    Navigator.of(context).pop();
+                                  }
                                 } catch (e) {
+                                  print(e);
                                   return null;
                                 }
                               },
@@ -153,7 +163,6 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        // color: Global.elevatedbuttonTextColor,
                                       ),
                                     ),
                                     Padding(
@@ -162,32 +171,9 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
                                         "${ref.watch(feedNotifier_provider).description}",
                                         style: TextStyle(
                                           fontSize: 14,
-                                          // color: Global.elevatedbuttonTextColor,
                                         ),
                                       ),
                                     ),
-                                    // Container(
-                                    //     padding: EdgeInsets.only(top: 10),
-                                    //     alignment: Alignment.centerRight,
-                                    //     child: SizedBox(
-                                    //       width: 100,
-                                    //       child: ElevatedButton(
-                                    //         style: ButtonStyle(
-                                    //           backgroundColor:
-                                    //               MaterialStatePropertyAll(
-                                    //                   Global.elevatedbuttonColor),
-                                    //         ),
-                                    //         onPressed: () {},
-                                    //         child: Text(
-                                    //           "保存",
-                                    //           style: TextStyle(
-                                    //             color:
-                                    //                 Global.elevatedbuttonTextColor,
-                                    //             fontSize: 16,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ))
                                   ],
                                 ),
                               )),
@@ -200,7 +186,7 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
     );
   }
 
-  // 按钮
+  // 按钮样式
   Widget addFeedPage_ElevatedButton({
     required String buttontext,
     required onpressed,
@@ -211,7 +197,9 @@ class AddFeedPageState extends ConsumerState<AddFeedPage> {
       // height: 45,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(Global.elevatedbuttonColor),
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context)
+              .colorScheme
+              .primary), //Global.elevatedbuttonColor
         ),
         onPressed: onpressed,
         child: Text(

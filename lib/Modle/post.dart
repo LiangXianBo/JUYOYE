@@ -35,9 +35,22 @@ class Post {
     required this.isFullTextCache,
     required this.openType,
   });
+  // 通过FeedUrl来判断数据库中该Feed是否已经存在
+  static bool postIsNotExist_inDB(post_link) {
+    List<Post> postList = Global.isar!.posts
+        .where()
+        .filter()
+        .linkEqualTo(post_link)
+        .findAllSync();
+
+    return postList.isEmpty;
+  }
+
   Future insertPostdata_toDB() async {
     await Global.isar!.writeTxn(() async {
-      await Global.isar!.posts.put(this); // 将新用户数据写入到 Isar
+      if (this.feedId != null) {
+        await Global.isar!.posts.put(this); // 将新用户数据写入到 Isar
+      }
     });
   }
 }

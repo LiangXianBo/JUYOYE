@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:isar/isar.dart';
 
 import '../Global/global.dart';
@@ -24,14 +22,28 @@ class Feed {
     required this.fullText,
     required this.openType,
   });
+// 通过FeedUrl来判断数据库中该Feed是否已经存在
+  static bool feedIsNotExist_inDB(String feedUrl) {
+    List<Feed> feedList = Global.isar!.feeds
+        .where()
+        .filter()
+        .feedUrlEqualTo(feedUrl)
+        .findAllSync();
+
+    return feedList.isEmpty;
+  }
+
 // 将数据插入到Isar数据库
   Future insertFeed_toDB() async {
     await Global.isar!.writeTxn(() async {
-      await Global.isar!.feeds.put(this); // 将数据插入到 Isar
+      if (this.feedName != "") {
+        await Global.isar!.feeds.put(this); // 将数据插入到 Isar
+      }
     });
   }
 
-  List getFeed_fromDB() {
+  // 从数据库读取所有Feed,以列表的形式返回
+  static List getFeed_fromDB() {
     List feedlist = Global.isar!.feeds.where().findAllSync();
     return feedlist;
   }

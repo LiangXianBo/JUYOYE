@@ -17,13 +17,16 @@ import 'Routes/AddFeedPage.dart';
 import 'Routes/HomePage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+///定义全局的 routeObserver 对象
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
 void main() async {
   // WidgetsFlutterBinding 将是 Widget 架构和 Flutter Engine 连接的核心桥梁
   // 通过 ensureInitialized() 方法我们可以得到一个全局单例 WidgetsFlutterBinding
   // 为后面 flutter_inappwebview 插件 与 Flutter Engine 进行通信 调用原生代码做准备，创建WidgetsBinding实例
   // 在调用 runApp 之前初始化绑定时，才需要调用此方法
   WidgetsFlutterBinding.ensureInitialized();
-  // // DartPluginRegistrant.ensureInitialized();
+  //Windows窗口的初始化(MacOS未适配)
   if (!(Platform.isAndroid || Platform.isIOS)) {
     //窗口初始化
     await windowManager.ensureInitialized();
@@ -54,10 +57,7 @@ void main() async {
     directory: dir.path,
   );
 
-  runApp(
-    ProviderScope(child: MyApp()),
-  );
-
+  // 设置Android的顶部和底部状态栏
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -65,30 +65,37 @@ void main() async {
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent,
     );
-
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
     );
   }
+  runApp(
+    ProviderScope(child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.light,
           seedColor: Color.fromRGBO(20, 190, 100, 1),
-          // outline: Color.fromRGBO(202, 211, 205, 1),
+          primary: Color.fromRGBO(20, 190, 100, 1),
         ),
+        fontFamily: '微软雅黑',
+        // textTheme: TextTheme(labelSmall: TextStyle(color: Colors.blue)),
         appBarTheme: AppBarTheme(
-          titleTextStyle:
-              TextStyle(color: Colors.black, fontFamily: "微软雅黑", fontSize: 20),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            // fontFamily: "NotoSansSC",
+            fontSize: 20,
+          ),
           shadowColor: Colors.transparent,
           elevation: 0.0,
         ),
@@ -102,7 +109,10 @@ class MyApp extends StatelessWidget {
         "/": (context) => HomePage(),
         "AddFeedPage": (context) => AddFeedPage(),
         "ReadPage": (context) => ReadPage(),
+        //  "AddFeed_showModalBottomSheet": (context) => AddFeed_showModalBottomSheet(),
       },
+      // 添加RouteObserverExample观察者
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false, //取消调试标志
     );
   }

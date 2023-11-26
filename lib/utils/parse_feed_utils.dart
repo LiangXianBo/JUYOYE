@@ -18,6 +18,7 @@ Future<Feed?> parse_Feed(url) async {
   try {
     // RSS feed
     final rssFeed = RssFeed.parse(response.body);
+    print(rssFeed);
     return Feed(
       feedName: rssFeed.title,
       feedUrl: url,
@@ -31,7 +32,7 @@ Future<Feed?> parse_Feed(url) async {
       // Atom feed
 
       final atomFeed = AtomFeed.parse(response.body);
-
+      print(atomFeed);
       return Feed(
         feedName: atomFeed.title,
         feedUrl: url,

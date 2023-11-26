@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, unused_local_variable
 
 import 'dart:io';
 
@@ -45,6 +45,18 @@ class PostListPageState extends ConsumerState<PostListPage> {
     // 重新读取Post数据表中的所有数据
     ref.read(postList_Provider.notifier).state =
         Global.isar!.posts.where().findAllSync();
+  }
+
+  // Post文章发布的时间格式设置
+  String postPubDate(List postList, int index) {
+    String post_pubdate;
+    var pubdate = postList[index].pubDate;
+    if (pubdate == null || pubdate == "" || pubdate == "null") {
+      post_pubdate = "";
+    } else {
+      post_pubdate = pubdate.substring(0, 10);
+    }
+    return post_pubdate;
   }
 
   @override
@@ -127,7 +139,7 @@ class PostListPageState extends ConsumerState<PostListPage> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "${postList[index].pubDate! != "" ? postList[index].pubDate!.substring(0, 10) : null}",
+                                        postPubDate(postList, index),
                                         style: TextStyle(
                                             fontSize: Global.Fontsize_12),
                                       ),

@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:juyoye/Global/global.dart';
-import 'package:juyoye/Modle/post.dart';
 
 import '../Modle/feed.dart';
 import '../Riverpod/providers.dart';

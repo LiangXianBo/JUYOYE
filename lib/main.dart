@@ -42,7 +42,7 @@ void main() async {
       titleBarStyle: TitleBarStyle.normal, //窗口标题栏
       skipTaskbar: false, //任务栏显示
     );
-    // windowManager.setIcon("lib/assets/Images/QJ.ico");
+    windowManager.setIcon("lib/Asserts/logo/JUYOYUE.png");
     windowManager.setMaximizable(false);
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();

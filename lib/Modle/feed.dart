@@ -24,10 +24,15 @@ class Feed {
     required this.fullText,
     required this.openType,
   });
-
+// 将数据插入到Isar数据库
   Future insertFeed_toDB() async {
     await Global.isar!.writeTxn(() async {
       await Global.isar!.feeds.put(this); // 将数据插入到 Isar
     });
+  }
+
+  List getFeed_fromDB() {
+    List feedlist = Global.isar!.feeds.where().findAllSync();
+    return feedlist;
   }
 }

@@ -53,26 +53,31 @@ dependencies:
   # 地址跳转
   url_launcher: ^6.2.1
   # 状态管理
-  riverpod: ^2.4.6
+  flutter_riverpod: ^2.4.6
   # Riverpod_generator 的一个侧包，公开注释
   riverpod_annotation: ^2.3.1
+  # 扩展卡片
+  expansion_tile_card: ^3.0.0
   # 用于在后台执行 dart 代码
   # flutter_background_service: ^5.0.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  # flutter_lints: ^2.0.0
   #设置移动端APP图标
   flutter_launcher_icons: ^0.13.1
+  isar_generator: ^3.1.0+1
   # 提供了使用 Dart 代码生成文件的具体方法
-  build_runner:
+  build_runner: 
+  # json_serializable: 
   # 用于构建自定义 lint 规则的工具。
   custom_lint:
   # Riverpod 的一个附属包，旨在通过依赖代码生成来提供不同的语法来定义“提供者”
-  riverpod_generator: ^2.3.6
+  riverpod_generator: any #^2.3.6
   # 面向 Riverpod 用户的开发者工具，旨在帮助解决常见问题并简化重复性任务
-  riverpod_lint: ^2.3.4
+  riverpod_lint: any #^2.3.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

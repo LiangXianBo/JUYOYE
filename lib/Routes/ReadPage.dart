@@ -3,9 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
-import '../Modle/feed.dart';
-import '../utils/parse_feed_utils.dart';
-
 class ReadPage extends StatefulWidget {
   const ReadPage({
     super.key,
@@ -22,14 +19,14 @@ class ReadPageState extends State<ReadPage> {
     //获取路由参数
     var response_content = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("阅读页面"),
-      // ),
+      appBar: AppBar(
+        title: Text("阅读页面"),
+      ),
       body: SizedBox(
         // width: 500,
         child: SingleChildScrollView(
           child: HtmlWidget(
-              // the first parameter (`html`) is required
+              // HTML页面格式
               '''
                            ${response_content}
                         <body>

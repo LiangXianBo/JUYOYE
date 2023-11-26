@@ -15,6 +15,7 @@ import 'Modle/post.dart';
 
 import 'Routes/AddFeedPage.dart';
 import 'Routes/HomePage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   // WidgetsFlutterBinding 将是 Widget 架构和 Flutter Engine 连接的核心桥梁
@@ -53,7 +54,9 @@ void main() async {
     directory: dir.path,
   );
 
-  runApp(MyApp());
+  runApp(
+    ProviderScope(child: MyApp()),
+  );
 
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(

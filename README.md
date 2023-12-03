@@ -1,6 +1,6 @@
 <div align='center'>
-<p><a href="Juyoyue.md">简体中文</a> </p><!--  | English -->
-<img src='lib/Asserts/logo/JUYOYUE.png' alt='MeRead' width='100px'/>
+<!-- <p><a href="Juyoyue.md">简体中文</a> </p> | English -->
+<img src='lib/Asserts/logo/JUYOYUE.png' alt='JUYOYUE' width='100px'/>
 <h1>JUYOYUE 聚优阅</h1>
 
 <p>

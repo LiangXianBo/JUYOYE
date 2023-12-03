@@ -38,7 +38,7 @@ void main() async {
       // maximumSize: Size(800, 450), //最大窗口尺寸
       center: true, //居中
       backgroundColor: Colors.transparent, //窗口背景色透明
-      title: "优聚阅", //标题名
+      title: "聚优阅", //标题名
       titleBarStyle: TitleBarStyle.normal, //窗口标题栏
       skipTaskbar: false, //任务栏显示
     );
